@@ -1,0 +1,17 @@
+Giải thích index
+- Tạo index loans(member_id, loan_date) để tối ưu Q10 vì truy vấn lọc theo loan_date và GROUP BY member_id.
+- Tạo index loans(status, due_date) giúp Q4 và Q8 lọc nhanh theo status và due_date.
+- Trước khi tạo index, EXPLAIN cho thấy type = ALL, rows quét lớn.
+- Sau khi tạo index, type chuyển sang range/ref, key được sử dụng.
+- Số rows ước lượng giảm đáng kể → truy vấn nhanh hơn.
+- Index loan_items(book_id) giúp Q5, Q7 JOIN nhanh hơn.
+- Index books(category_id) hỗ trợ Q2 và Q9 khi GROUP BY theo danh mục.
+Index dùng:
+ CREATE INDEX idx_loans_member_date ON loans(member_id, loan_date);
+ CREATE INDEX idx_loans_status_due ON loans(status, due_date);
+ CREATE INDEX idx_loan_items_book ON loan_items(book_id);
+ CREATE INDEX idx_books_category ON books(category_id);
+Giải thích phần A bài 4
+ Không thể xóa thành viên vì bảng loans đang tham chiếu đến member_id đó.
+ Ràng buộc ON DELETE RESTRICT giúp bảo toàn dữ liệu lịch sử mượn sách.
+ Nếu muốn xóa, cần xóa các bản ghi loans trước.
